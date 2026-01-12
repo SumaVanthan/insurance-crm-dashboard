@@ -1,0 +1,444 @@
+/* =============================================
+   INSURANCE CRM - COMPONENTS V2
+   Clean, Modern UI Components
+   ============================================= */
+
+/* =============================================
+   CARDS
+   ============================================= */
+.card {
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    padding: var(--space-5);
+    transition: all var(--duration-base) var(--ease-out);
+}
+
+.card:hover {
+    border-color: var(--border-default);
+    box-shadow: var(--shadow-card-hover);
+}
+
+/* =============================================
+   BUTTONS
+   ============================================= */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    font-family: var(--font-family);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    line-height: 1;
+    padding: var(--space-3) var(--space-4);
+    border: none;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all var(--duration-fast) var(--ease-out);
+    white-space: nowrap;
+}
+
+.btn:focus-visible {
+    outline: 2px solid var(--brand-500);
+    outline-offset: 2px;
+}
+
+/* Primary Button */
+.btn-primary {
+    background: var(--brand-600);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--brand-500);
+    transform: translateY(-1px);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+/* Secondary Button */
+.btn-secondary {
+    background: var(--bg-subtle);
+    color: var(--slate-700);
+    border: 1px solid var(--border-default);
+}
+
+.btn-secondary:hover {
+    background: var(--slate-200);
+    border-color: var(--border-strong);
+}
+
+/* Ghost Button */
+.btn-ghost {
+    background: transparent;
+    color: var(--slate-600);
+}
+
+.btn-ghost:hover {
+    background: var(--bg-hover);
+    color: var(--slate-900);
+}
+
+/* Link Button */
+.btn-link {
+    background: transparent;
+    color: var(--brand-600);
+    padding: 0;
+}
+
+.btn-link:hover {
+    color: var(--brand-500);
+    text-decoration: underline;
+}
+
+/* Button Sizes */
+.btn-sm {
+    font-size: var(--font-size-xs);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+}
+
+.btn-lg {
+    font-size: var(--font-size-base);
+    padding: var(--space-4) var(--space-6);
+    border-radius: var(--radius-lg);
+}
+
+/* Icon Button */
+.btn-icon {
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: var(--radius-lg);
+    font-size: 18px;
+}
+
+/* =============================================
+   BADGES
+   ============================================= */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-md);
+    letter-spacing: 0.01em;
+}
+
+.badge-success {
+    background: var(--success-bg);
+    color: var(--success);
+}
+
+.badge-warning {
+    background: var(--warning-bg);
+    color: var(--warning);
+}
+
+.badge-error {
+    background: var(--error-bg);
+    color: var(--error);
+}
+
+.badge-info {
+    background: var(--info-bg);
+    color: var(--info);
+}
+
+.badge-neutral {
+    background: var(--bg-subtle);
+    color: var(--slate-600);
+}
+
+/* =============================================
+   STATUS INDICATOR
+   ============================================= */
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: var(--radius-full);
+    flex-shrink: 0;
+}
+
+.status-dot--active {
+    background: var(--success);
+}
+
+.status-dot--expiring {
+    background: var(--warning);
+}
+
+.status-dot--expired {
+    background: var(--error);
+}
+
+/* =============================================
+   ALERTS
+   ============================================= */
+.alert {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    border-radius: var(--radius-lg);
+    border-left: 3px solid;
+}
+
+.alert--error {
+    background: var(--error-bg);
+    border-left-color: var(--error);
+}
+
+.alert--warning {
+    background: var(--warning-bg);
+    border-left-color: var(--warning);
+}
+
+.alert--info {
+    background: var(--info-bg);
+    border-left-color: var(--info);
+}
+
+.alert-icon {
+    font-size: 18px;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.alert-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.alert-title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--slate-900);
+    margin-bottom: var(--space-1);
+}
+
+.alert-message {
+    font-size: var(--font-size-sm);
+    color: var(--slate-600);
+    margin: 0;
+    line-height: var(--line-height-relaxed);
+}
+
+.alert-action {
+    margin-top: var(--space-3);
+}
+
+/* =============================================
+   POLICY CARDS
+   ============================================= */
+.policy-card {
+    position: relative;
+    padding: var(--space-5);
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-xl);
+    transition: all var(--duration-base) var(--ease-out);
+}
+
+.policy-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+}
+
+.policy-card--motor::before {
+    background: var(--motor-accent);
+}
+
+.policy-card--health::before {
+    background: var(--health-accent);
+}
+
+.policy-card--travel::before {
+    background: var(--travel-accent);
+}
+
+.policy-card--electronics::before {
+    background: var(--electronics-accent);
+}
+
+.policy-card:hover {
+    border-color: var(--border-default);
+    box-shadow: var(--shadow-card-hover);
+    transform: translateY(-2px);
+}
+
+.policy-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.policy-icon--motor {
+    background: var(--motor-bg);
+}
+
+.policy-icon--health {
+    background: var(--health-bg);
+}
+
+.policy-icon--travel {
+    background: var(--travel-bg);
+}
+
+.policy-icon--electronics {
+    background: var(--electronics-bg);
+}
+
+.policy-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.policy-name {
+    font-size: var(--font-size-base);
+    font-weight: var(--font-weight-semibold);
+    color: var(--slate-900);
+    margin-bottom: var(--space-1);
+}
+
+.policy-meta {
+    font-size: var(--font-size-sm);
+    color: var(--slate-500);
+}
+
+/* =============================================
+   AVATARS
+   ============================================= */
+.avatar {
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, var(--brand-500), var(--brand-600));
+    color: white;
+    border-radius: var(--radius-full);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    flex-shrink: 0;
+}
+
+/* =============================================
+   INLINE POLICY NUDGE (Upsell)
+   ============================================= */
+.policy-nudge {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    margin-top: var(--space-4);
+    background: var(--success-bg);
+    border: 1px solid rgba(34, 197, 94, 0.12);
+    border-radius: var(--radius-lg);
+    transition: all var(--duration-fast) var(--ease-out);
+}
+
+.policy-nudge:hover {
+    background: rgba(34, 197, 94, 0.12);
+}
+
+.policy-nudge-icon {
+    width: 32px;
+    height: 32px;
+    background: rgba(34, 197, 94, 0.15);
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+.policy-nudge-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.policy-nudge-label {
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
+    color: var(--success);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    margin-bottom: 2px;
+}
+
+.policy-nudge-title {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-medium);
+    color: var(--slate-800);
+    margin-bottom: 2px;
+}
+
+.policy-nudge-benefit {
+    font-size: var(--font-size-xs);
+    color: var(--slate-500);
+}
+
+.policy-nudge-benefit::before {
+    content: '';
+}
+
+.policy-nudge-action {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-shrink: 0;
+}
+
+.policy-nudge-price {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--slate-700);
+}
+
+/* =============================================
+   EMPTY STATE
+   ============================================= */
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-12);
+    text-align: center;
+}
+
+.empty-state-icon {
+    font-size: 48px;
+    margin-bottom: var(--space-4);
+    opacity: 0.6;
+}
+
+.empty-state-title {
+    font-size: var(--font-size-lg);
+    font-weight: var(--font-weight-semibold);
+    color: var(--slate-700);
+    margin-bottom: var(--space-2);
+}
+
+.empty-state-text {
+    color: var(--slate-500);
+    max-width: 280px;
+    margin: 0;
+}

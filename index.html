@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Insurance CRM Dashboard - Your personalized insurance management experience">
+
+  <title>Insurance Dashboard | Manage Your Policies</title>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="styles/design-system.css">
+  <link rel="stylesheet" href="styles/components.css">
+  <link rel="stylesheet" href="styles/dashboard.css">
+
+  <!-- Favicon -->
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛡️</text></svg>">
+</head>
+
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-content">
+        <!-- Brand -->
+        <div class="header-brand">
+          <div class="header-logo">🛡️</div>
+          <div>
+            <div class="header-title">InsureHub</div>
+            <div class="header-subtitle">Smart Coverage</div>
+          </div>
+        </div>
+
+        <!-- User Type Selector (Demo) -->
+        <div class="user-type-selector">
+          <label for="userTypeSelect">Switch User Type:</label>
+          <select id="userTypeSelect" onchange="handleUserTypeChange(this.value)">
+            <option value="individual">👤 Individual Consumer</option>
+            <option value="traveler">✈️ Frequent Traveler</option>
+            <option value="vehicle">🚗 Vehicle-Centric User</option>
+            <option value="digital">📱 Digital Asset Owner</option>
+            <option value="health">❤️ Health-Focused User</option>
+          </select>
+        </div>
+
+        <!-- User Actions -->
+        <div class="header-actions">
+          <button class="btn btn-icon btn-ghost" title="Notifications">
+            🔔
+          </button>
+          <button class="btn btn-icon btn-ghost" title="Help">
+            ❓
+          </button>
+
+          <!-- User Profile -->
+          <div class="header-user">
+            <div class="header-user-info">
+              <div class="header-user-name" id="userName">Rahul Sharma</div>
+              <div class="header-user-type" id="userTypeDisplay">Individual Consumer</div>
+            </div>
+            <div class="avatar" id="userAvatar">RS</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Welcome Section -->
+      <section class="dashboard-welcome">
+        <p class="welcome-text">Here's what needs your attention today</p>
+        <h1 class="welcome-heading" id="welcomeName">Good Morning, Rahul <span>👋</span></h1>
+        <div class="user-type-badge" id="userTypeBadge">👤 Individual Consumer</div>
+      </section>
+
+      <!-- Dynamic Dashboard Content -->
+      <div class="dashboard-grid" id="dashboardContent">
+        <!-- Dashboard sections will be dynamically rendered here -->
+        <div class="empty-state">
+          <div class="empty-state-icon">⏳</div>
+          <h3 class="empty-state-title">Loading your dashboard...</h3>
+          <p class="empty-state-text">Personalizing your experience</p>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer
+      style="text-align: center; padding: var(--space-6); color: var(--gray-400); font-size: var(--font-size-sm);">
+      <p>© 2025 InsureHub. All rights reserved. | Powered by Smart Coverage AI</p>
+    </footer>
+  </div>
+
+  <!-- JavaScript (Inline for file:// compatibility) -->
+  <script>
+    // =============================================
+    // USER TYPES CONFIGURATION
+    // =============================================
+    const USER_TYPES = {
+      individual: {
+        id: 'individual',
+        name: 'Individual Consumer',
+        description: 'Retail customer with diverse insurance needs',
+        icon: '👤',
+        color: '#667eea',
+        policyTypes: ['motor', 'health', 'travel', 'electronics']
+      },
+      traveler: {
+        id: 'traveler',
+        name: 'Frequent Traveler',
+        description: 'Domestic and international traveler',
+        icon: '✈️',
+        color: '#f43f5e',
+        policyTypes: ['travel', 'health', 'electronics']
+      },
+      vehicle: {
+        id: 'vehicle',
+        name: 'Vehicle-Centric User',
+        description: 'Primarily engaged through motor insurance',
+        icon: '🚗',
+        color: '#0ea5e9',
+        policyTypes: ['motor']
+      },
+      digital: {
+        id: 'digital',
+        name: 'Digital Asset Owner',
+        description: 'Tech-savvy user with devices to protect',
+        icon: '📱',
+        color: '#8b5cf6',
+        policyTypes: ['electronics']
+      },
+      health: {
+        id: 'health',
+        name: 'Health-Focused User',
+        description: 'Primarily concerned with health coverage',
+        icon: '❤️',
+        color: '#10b981',
+        policyTypes: ['health']
+      }
+    };
+
+    const POLICY_TYPES = {
+      motor: { id: 'motor', name: 'Motor Insurance', icon: '🚗', color: '#0ea5e9' },
+      health: { id: 'health', name: 'Health Insurance', icon: '❤️', color: '#10b981' },
+      travel: { id: 'travel', name: 'Travel Insurance', icon: '✈️', color: '#f43f5e' },
+      electronics: { id: 'electronics', name: 'Electronics Insurance', icon: '📱', color: '#8b5cf6' }
+    };
+
+    const UPSELL_PRODUCTS = {
+      roadside: { id: 'roadside', name: 'Roadside Assistance', benefit: '24/7 breakdown support anywhere in India', icon: '🔧', price: '₹499/year', policyType: 'motor' },
+      ncb_protect: { id: 'ncb_protect', name: 'NCB Protection', benefit: 'Protect your No Claim Bonus even after a claim', icon: '🛡️', price: '₹599/year', policyType: 'motor' },
+      zero_dep: { id: 'zero_dep', name: 'Zero Depreciation', benefit: 'Get full claim without depreciation deduction', icon: '💯', price: '₹1,299/year', policyType: 'motor' },
+      baggage: { id: 'baggage', name: 'Baggage Protection', benefit: 'Coverage for lost, delayed, or damaged baggage', icon: '🧳', price: '₹399/trip', policyType: 'travel' },
+      flight_delay: { id: 'flight_delay', name: 'Flight Delay Cover', benefit: 'Compensation for delays over 6 hours', icon: '⏱️', price: '₹299/trip', policyType: 'travel' },
+      accidental_damage: { id: 'accidental_damage', name: 'Accidental Damage Cover', benefit: 'Protection against drops, spills, and screen damage', icon: '💥', price: '₹999/year', policyType: 'electronics' },
+      extended_warranty: { id: 'extended_warranty', name: 'Extended Warranty', benefit: 'Extend manufacturer warranty by 1 year', icon: '📅', price: '₹1,499', policyType: 'electronics' },
+      super_topup: { id: 'super_topup', name: 'Super Top-Up Plan', benefit: 'Additional ₹10L coverage at low premium', icon: '🚀', price: '₹2,999/year', policyType: 'health' },
+      critical_illness: { id: 'critical_illness', name: 'Critical Illness Add-on', benefit: 'Lump sum on diagnosis of 36 illnesses', icon: '🏥', price: '₹3,999/year', policyType: 'health' }
+    };
+
+    // Nudges to show under specific policies (based on missing addons)
+    const POLICY_NUDGES = {
+      motor: [
+        { condition: (policy) => !policy.addons?.includes('roadside'), upsellId: 'roadside' },
+        { condition: (policy) => !policy.addons?.includes('zero_depreciation'), upsellId: 'zero_dep' },
+        { condition: (policy) => !policy.addons?.includes('ncb_protect'), upsellId: 'ncb_protect' }
+      ],
+      travel: [
+        { condition: (policy) => !policy.addons?.includes('baggage'), upsellId: 'baggage' },
+        { condition: (policy) => !policy.addons?.includes('flight_delay'), upsellId: 'flight_delay' }
+      ],
+      electronics: [
+        { condition: (policy) => !policy.addons?.includes('accidental_damage'), upsellId: 'accidental_damage' },
+        { condition: (policy) => !policy.addons?.includes('extended_warranty'), upsellId: 'extended_warranty' }
+      ],
+      health: [
+        { condition: (policy) => !policy.addons?.includes('super_topup'), upsellId: 'super_topup' },
+        { condition: (policy) => !policy.addons?.includes('critical_illness'), upsellId: 'critical_illness' }
+      ]
+    };
+
+    // New Product Catalog (for cross-selling new products)
+    const NEW_PRODUCTS = {
+      motor: {
+        id: 'motor',
+        name: 'Motor Insurance',
+        tagline: 'Protect your vehicles',
+        description: 'Comprehensive coverage for cars and two-wheelers with 24/7 roadside assistance',
+        icon: '🚗',
+        startingPrice: '₹2,999/year',
+        benefits: ['Zero paperwork claims', 'Cashless repairs at 5000+ garages', 'Personal accident cover']
+      },
+      health: {
+        id: 'health',
+        name: 'Health Insurance',
+        tagline: 'Secure your family\'s health',
+        description: 'Comprehensive health coverage with cashless treatment at 10,000+ hospitals',
+        icon: '❤️',
+        startingPrice: '₹5,999/year',
+        benefits: ['No claim bonus up to 50%', 'Free annual health checkup', 'Pre & post hospitalization']
+      },
+      travel: {
+        id: 'travel',
+        name: 'Travel Insurance',
+        tagline: 'Travel worry-free',
+        description: 'Complete protection for domestic and international trips',
+        icon: '✈️',
+        startingPrice: '₹299/trip',
+        benefits: ['Trip cancellation cover', 'Lost baggage protection', 'Medical emergency abroad']
+      },
+      electronics: {
+        id: 'electronics',
+        name: 'Electronics Insurance',
+        tagline: 'Protect your devices',
+        description: 'Coverage for smartphones, laptops, tablets, and gadgets',
+        icon: '📱',
+        startingPrice: '₹999/year',
+        benefits: ['Accidental damage cover', 'Theft protection', 'Worldwide coverage']
+      }
+    };
+
+    // =============================================
+    // MOCK DATA
+    // =============================================
+    const MOCK_USERS = {
+      individual: { id: 'usr_001', name: 'Rahul Sharma', email: 'rahul.sharma@email.com', type: 'individual' },
+      traveler: { id: 'usr_002', name: 'Priya Patel', email: 'priya.patel@email.com', type: 'traveler' },
+      vehicle: { id: 'usr_003', name: 'Amit Kumar', email: 'amit.kumar@email.com', type: 'vehicle' },
+      digital: { id: 'usr_004', name: 'Sneha Reddy', email: 'sneha.reddy@email.com', type: 'digital' },
+      health: { id: 'usr_005', name: 'Vikram Singh', email: 'vikram.singh@email.com', type: 'health' }
+    };
+
+    const MOCK_POLICIES = {
+      individual: [
+        { id: 'pol_motor_001', type: 'motor', name: 'Comprehensive Car Insurance', policyNumber: 'MOT-2024-78542', vehicle: 'Honda City 2022', premium: 12500, sumInsured: 850000, daysToExpiry: 155, status: 'active', addons: ['roadside'] },
+        { id: 'pol_health_001', type: 'health', name: 'Family Health Guard', policyNumber: 'HLT-2024-45632', members: ['Self', 'Spouse', '2 Children'], premium: 25000, sumInsured: 500000, daysToExpiry: 78, status: 'active', usedAmount: 45000, remainingAmount: 455000 },
+        { id: 'pol_travel_001', type: 'travel', name: 'International Travel Cover', policyNumber: 'TRV-2024-98712', destination: 'Europe', travelers: 2, premium: 3500, sumInsured: 5000000, daysToExpiry: 28, status: 'upcoming' }
+      ],
+      traveler: [
+        { id: 'pol_travel_002', type: 'travel', name: 'Multi-Trip Annual Cover', policyNumber: 'TRV-2024-11234', coverage: 'Worldwide', premium: 8500, sumInsured: 7500000, daysToExpiry: 169, status: 'active', tripsUsed: 4 },
+        { id: 'pol_health_002', type: 'health', name: 'Global Health Cover', policyNumber: 'HLT-2024-77821', coverage: 'International', premium: 45000, sumInsured: 2500000, daysToExpiry: 214, status: 'active' },
+        { id: 'pol_electronics_001', type: 'electronics', name: 'Gadget Shield Pro', policyNumber: 'ELC-2024-55123', devices: ['MacBook Pro', 'iPhone 15 Pro'], premium: 4500, sumInsured: 250000, daysToExpiry: 261, status: 'active' }
+      ],
+      vehicle: [
+        { id: 'pol_motor_002', type: 'motor', name: 'Comprehensive Two-Wheeler', policyNumber: 'MOT-2024-33456', vehicle: 'Royal Enfield Classic 350', premium: 4500, sumInsured: 180000, daysToExpiry: 127, status: 'active', addons: [] },
+        { id: 'pol_motor_003', type: 'motor', name: 'Premium Car Insurance', policyNumber: 'MOT-2024-44789', vehicle: 'Hyundai Creta 2023', premium: 18500, sumInsured: 1400000, daysToExpiry: 56, status: 'expiring_soon', addons: ['zero_depreciation', 'engine_cover'] }
+      ],
+      digital: [
+        { id: 'pol_electronics_002', type: 'electronics', name: 'Premium Device Protection', policyNumber: 'ELC-2024-88765', devices: ['iPhone 15 Pro Max', 'iPad Pro', 'AirPods Pro'], premium: 6500, sumInsured: 320000, daysToExpiry: 231, status: 'active' },
+        { id: 'pol_electronics_003', type: 'electronics', name: 'Laptop Extended Warranty', policyNumber: 'ELC-2024-99123', devices: ['Dell XPS 15'], premium: 3200, sumInsured: 150000, daysToExpiry: 671, status: 'active' }
+      ],
+      health: [
+        { id: 'pol_health_003', type: 'health', name: 'Super Health Plus', policyNumber: 'HLT-2024-12567', members: ['Self', 'Spouse'], premium: 32000, sumInsured: 1000000, daysToExpiry: 169, status: 'active', usedAmount: 125000, remainingAmount: 875000, networkHospitals: 5500 },
+        { id: 'pol_health_004', type: 'health', name: 'Critical Illness Cover', policyNumber: 'HLT-2024-34890', coverage: '36 Critical Illnesses', premium: 8500, sumInsured: 2500000, daysToExpiry: 200, status: 'active' }
+      ]
+    };
+
+    const MOCK_INCOMPLETE_JOURNEYS = {
+      individual: { id: 'journey_001', type: 'policy_purchase', product: 'Electronics Insurance', productType: 'electronics', currentStep: 'kyc', progress: 40, estimatedTime: '3 mins', completedSteps: ['product_selection', 'details_entry'], totalSteps: 5 },
+      traveler: { id: 'journey_002', type: 'policy_purchase', product: 'Singapore Trip Cover', productType: 'travel', currentStep: 'payment', progress: 60, estimatedTime: '2 mins', completedSteps: ['product_selection', 'details_entry', 'kyc'], totalSteps: 5 },
+      vehicle: null,
+      digital: { id: 'journey_003', type: 'addon_selection', product: 'Accidental Damage Cover', productType: 'electronics', currentStep: 'addon_details', progress: 25, estimatedTime: '4 mins', completedSteps: ['addon_browse'], totalSteps: 4 },
+      health: { id: 'journey_004', type: 'claim_submission', product: 'Health Claim', productType: 'health', currentStep: 'document_upload', progress: 25, estimatedTime: '5 mins', completedSteps: ['incident_report'], totalSteps: 4 }
+    };
+
+    const MOCK_ALERTS = {
+      individual: [
+        { id: 'alert_001', type: 'warning', title: 'Policy Expiring Soon', message: 'Your Family Health Guard policy expires in 78 days. Renew early to get 5% discount.', action: 'Renew Now', priority: 2 }
+      ],
+      traveler: [
+        { id: 'alert_002', type: 'info', title: 'Upcoming Trip Coverage', message: 'Your Singapore trip coverage starts on Feb 15. Download your policy docs.', action: 'Download', priority: 3 }
+      ],
+      vehicle: [
+        { id: 'alert_003', type: 'error', title: 'Urgent: Policy Expiring', message: 'Your Hyundai Creta insurance expires in 56 days. Renew to avoid coverage gap.', action: 'Renew Now', priority: 1 },
+        { id: 'alert_004', type: 'warning', title: 'Service Due', message: 'Your Royal Enfield is due for annual service. Book a free inspection.', action: 'Book Service', priority: 2 }
+      ],
+      digital: [],
+      health: [
+        { id: 'alert_005', type: 'info', title: 'Health Checkup Available', message: 'You have 1 free annual health checkup remaining. Valid till March 2025.', action: 'Book Checkup', priority: 3 },
+        { id: 'alert_006', type: 'warning', title: 'Coverage Usage Alert', message: 'You have used 12.5% of your health coverage. ₹8,75,000 remaining.', action: 'View Details', priority: 2 }
+      ]
+    };
+
+    const MOCK_CLAIMS = {
+      individual: [
+        { id: 'claim_001', policyType: 'health', policyName: 'Family Health Guard', claimNumber: 'CLM-2024-8765', type: 'Hospitalization', amount: 45000, status: 'approved', statusText: 'Approved', currentStep: 4, totalSteps: 4 }
+      ],
+      traveler: [
+        { id: 'claim_002', policyType: 'travel', policyName: 'Multi-Trip Annual Cover', claimNumber: 'CLM-2024-9123', type: 'Flight Delay', amount: 5000, status: 'processing', statusText: 'Under Review', currentStep: 2, totalSteps: 4 }
+      ],
+      vehicle: [
+        { id: 'claim_003', policyType: 'motor', policyName: 'Comprehensive Two-Wheeler', claimNumber: 'CLM-2024-7456', type: 'Accident Repair', amount: 12500, status: 'processing', statusText: 'Documents Verification', currentStep: 2, totalSteps: 4 }
+      ],
+      digital: [],
+      health: [
+        { id: 'claim_004', policyType: 'health', policyName: 'Super Health Plus', claimNumber: 'CLM-2024-6789', type: 'Reimbursement', amount: 28000, status: 'processing', statusText: 'Awaiting Documents', currentStep: 1, totalSteps: 4 },
+        { id: 'claim_005', policyType: 'health', policyName: 'Super Health Plus', claimNumber: 'CLM-2024-5432', type: 'Cashless', amount: 97000, status: 'approved', statusText: 'Settled', currentStep: 4, totalSteps: 4 }
+      ]
+    };
+
+    const MOCK_UPSELL = {
+      individual: { id: 'roadside', reason: 'Your motor policy doesn\'t include breakdown assistance' },
+      traveler: { id: 'baggage', reason: 'Protect your luggage on international trips' },
+      vehicle: { id: 'ncb_protect', reason: 'Preserve your No Claim Bonus even after a claim' },
+      digital: { id: 'accidental_damage', reason: 'Your devices aren\'t covered for accidental drops' },
+      health: { id: 'super_topup', reason: 'Get additional ₹25 Lakh coverage at just ₹4,499/year' }
+    };
+
+    const MOCK_STATS = {
+      individual: { activePolicies: 3, totalCoverage: '₹1.39 Cr', openClaims: 0, upcomingRenewals: 1 },
+      traveler: { activePolicies: 3, tripsProtected: 4, openClaims: 1, daysUntilNextTrip: 33 },
+      vehicle: { activeVehicles: 2, totalCoverage: '₹15.8 L', openClaims: 1, nextServiceDue: 'Feb 15' },
+      digital: { devicesProtected: 4, totalCoverage: '₹4.7 L', openClaims: 0, warrantyExpiring: 0 },
+      health: { familyMembers: 2, totalCoverage: '₹35 L', coverageUsed: '12.5%', pendingClaims: 1 }
+    };
+
+    // =============================================
+    // DASHBOARD ENGINE
+    // =============================================
+    class DashboardEngine {
+      constructor() {
+        this.currentUserType = 'individual';
+        this.dismissedJourneys = new Set(JSON.parse(localStorage.getItem('dismissedJourneys') || '[]'));
+      }
+
+      setUserType(userType) {
+        if (USER_TYPES[userType]) {
+          this.currentUserType = userType;
+          this.render();
+        }
+      }
+
+      getCurrentUser() {
+        return { ...MOCK_USERS[this.currentUserType], typeConfig: USER_TYPES[this.currentUserType] };
+      }
+
+      getPolicies() {
+        return MOCK_POLICIES[this.currentUserType] || [];
+      }
+
+      getIncompleteJourney() {
+        const journey = MOCK_INCOMPLETE_JOURNEYS[this.currentUserType];
+        if (journey && !this.dismissedJourneys.has(journey.id)) {
+          return journey;
+        }
+        return null;
+      }
+
+      dismissJourney(journeyId) {
+        this.dismissedJourneys.add(journeyId);
+        localStorage.setItem('dismissedJourneys', JSON.stringify([...this.dismissedJourneys]));
+        this.render();
+      }
+
+      getAlerts() {
+        return (MOCK_ALERTS[this.currentUserType] || []).sort((a, b) => a.priority - b.priority);
+      }
+
+      getClaims() {
+        return MOCK_CLAIMS[this.currentUserType] || [];
+      }
+
+      getUpsell() {
+        const upsellData = MOCK_UPSELL[this.currentUserType];
+        if (upsellData) {
+          return { ...UPSELL_PRODUCTS[upsellData.id], reason: upsellData.reason };
+        }
+        return null;
+      }
+
+      getStats() {
+        return MOCK_STATS[this.currentUserType] || {};
+      }
+
+      render() {
+        const user = this.getCurrentUser();
+        this.renderHeader(user);
+        this.renderWelcome(user);
+        this.renderDashboard();
+      }
+
+      renderHeader(user) {
+        const userNameEl = document.getElementById('userName');
+        const userTypeEl = document.getElementById('userTypeDisplay');
+        const userAvatarEl = document.getElementById('userAvatar');
+
+        if (userNameEl) userNameEl.textContent = user.name;
+        if (userTypeEl) userTypeEl.textContent = user.typeConfig.name;
+        if (userAvatarEl) userAvatarEl.textContent = user.name.split(' ').map(n => n[0]).join('');
+      }
+
+      renderWelcome(user) {
+        const welcomeNameEl = document.getElementById('welcomeName');
+        const userTypeBadgeEl = document.getElementById('userTypeBadge');
+
+        if (welcomeNameEl) {
+          welcomeNameEl.innerHTML = `Good ${this.getTimeOfDay()}, ${user.name.split(' ')[0]} <span>👋</span>`;
+        }
+
+        if (userTypeBadgeEl) {
+          userTypeBadgeEl.innerHTML = `${user.typeConfig.icon} ${user.typeConfig.name}`;
+        }
+      }
+
+      getTimeOfDay() {
+        const hour = new Date().getHours();
+        if (hour < 12) return 'Morning';
+        if (hour < 17) return 'Afternoon';
+        return 'Evening';
+      }
+
+      renderDashboard() {
+        const dashboardEl = document.getElementById('dashboardContent');
+        if (!dashboardEl) return;
+
+        let html = '';
+
+        // 1. Resume Journey (Highest Priority)
+        const journey = this.getIncompleteJourney();
+        if (journey) {
+          html += this.renderResumeJourney(journey);
+        }
+
+        // 2. Critical Alerts
+        const alerts = this.getAlerts();
+        if (alerts.length > 0) {
+          html += this.renderAlerts(alerts);
+        }
+
+        // 3. Quick Stats
+        html += this.renderStats();
+
+        // 4. Active Policies
+        const policies = this.getPolicies();
+        if (policies.length > 0) {
+          html += this.renderPolicies(policies);
+        }
+
+        // 5. Claims Tracker
+        const claims = this.getClaims();
+        if (claims.length > 0) {
+          html += this.renderClaims(claims);
+        }
+
+        // 6. New Product Recommendations (Cross-sell)
+        const newProducts = this.getNewProductRecommendations();
+        if (newProducts.length > 0) {
+          html += this.renderNewProducts(newProducts);
+        }
+
+        dashboardEl.innerHTML = html;
+      }
+
+      // Get new products the user doesn't have yet
+      getNewProductRecommendations() {
+        const policies = this.getPolicies();
+        const ownedTypes = new Set(policies.map(p => p.type));
+        const allTypes = ['motor', 'health', 'travel', 'electronics'];
+
+        return allTypes
+          .filter(type => !ownedTypes.has(type))
+          .map(type => NEW_PRODUCTS[type])
+          .slice(0, 2); // Show max 2 recommendations
+      }
+
+      // Get nudge for a specific policy based on missing coverage
+      getNudgeForPolicy(policy) {
+        const nudges = POLICY_NUDGES[policy.type];
+        if (!nudges) return null;
+
+        for (const nudge of nudges) {
+          if (nudge.condition(policy)) {
+            return UPSELL_PRODUCTS[nudge.upsellId];
+          }
+        }
+        return null;
+      }
+
+      renderResumeJourney(journey) {
+        const policyType = POLICY_TYPES[journey.productType];
+
+        return `
+          <section class="priority-section" id="resumeSection">
+            <div class="card resume-journey-card">
+              <div class="resume-journey-header">
+                <div class="resume-journey-icon">${policyType.icon}</div>
+                <div>
+                  <div class="resume-journey-label">Continue where you left off</div>
+                  <div class="resume-journey-title">${journey.product}</div>
+                </div>
+              </div>
+              
+              <div class="resume-journey-progress">
+                <div class="resume-progress-bar">
+                  <div class="resume-progress-fill" style="width: ${journey.progress}%"></div>
+                </div>
+                <div class="resume-progress-text">
+                  <span>Step ${journey.completedSteps.length + 1} of ${journey.totalSteps}: ${this.formatStepName(journey.currentStep)}</span>
+                  <span>~${journey.estimatedTime} to complete</span>
+                </div>
+              </div>
+              
+              <div class="resume-journey-actions">
+                <button class="btn btn-primary btn-lg" onclick="dashboard.resumeJourney('${journey.id}')">
+                  Resume Now →
+                </button>
+                <button class="btn btn-ghost" onclick="dashboard.restartJourney('${journey.id}')">
+                  Start Over
+                </button>
+                <button class="btn btn-ghost" onclick="dashboard.dismissJourney('${journey.id}')">
+                  Dismiss
+                </button>
+              </div>
+            </div>
+          </section>
+        `;
+      }
+
+      renderAlerts(alerts) {
+        const alertsHtml = alerts.map(alert => `
+          <div class="alert alert--${alert.type}">
+            <div class="alert-icon">
+              ${alert.type === 'error' ? '⚠️' : alert.type === 'warning' ? '⚡' : 'ℹ️'}
+            </div>
+            <div class="alert-content">
+              <div class="alert-title">${alert.title}</div>
+              <p class="alert-message">${alert.message}</p>
+              <div class="alert-action">
+                <button class="btn btn-sm btn-secondary">${alert.action}</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+
+        return `
+          <section class="priority-section" id="alertsSection">
+            <div class="section-header">
+              <h2 class="section-title">🔔 Attention Required</h2>
+            </div>
+            <div class="alerts-container">
+              ${alertsHtml}
+            </div>
+          </section>
+        `;
+      }
+
+      renderStats() {
+        const stats = this.getStats();
+        const user = this.getCurrentUser();
+
+        let statsHtml = '';
+
+        if (user.typeConfig.id === 'individual') {
+          statsHtml = `
+            <div class="stat-card"><div class="stat-value">${stats.activePolicies}</div><div class="stat-label">Active Policies</div></div>
+            <div class="stat-card"><div class="stat-value">${stats.totalCoverage}</div><div class="stat-label">Total Coverage</div></div>
+            <div class="stat-card"><div class="stat-value">${stats.openClaims}</div><div class="stat-label">Open Claims</div></div>
+            <div class="stat-card"><div class="stat-value">${stats.upcomingRenewals}</div><div class="stat-label">Renewals Due</div></div>
+          `;
+        } else if (user.typeConfig.id === 'traveler') {
+          statsHtml = `
+            <div class="stat-card"><div class="stat-value">${stats.activePolicies}</div><div class="stat-label">Active Policies</div></div>
+            <div class="stat-card"><div class="stat-value">${stats.tripsProtected}</div><div class="stat-label">Trips Protected</div></div>
+            <div class="stat-card"><div class="stat-value">${stats.openClaims}</div><div class="stat-label">Open Claims</div></div>
+            <div class="stat-card"><div class="stat-value">${stats.daysUntilNextTrip}</div><div class="stat-label">Days to Next Trip</div></div>
+          `;
+        } else if (user.typeConfig.id === 'vehicle') {
+          statsHtml = `
+            <div class="stat-card"><div class="stat-value">${stats.activeVehicles}</div><div class="stat-label">Vehicles Covered</div></div>
+            <div class="stat-card"><div class="stat-value">${stats.totalCoverage}</div><div class="stat-label">Total Coverage</div></div>
+            <div class="stat-card"><div class="stat-value">${stats.openClaims}</div><div class="stat-label">Open Claims</div></div>
+            <div class="stat-card"><div class="stat-value">${stats.nextServiceDue}</div><div class="stat-label">Next Service</div></div>
+          `;
+        } else if (user.typeConfig.id === 'digital') {
+          statsHtml = `
+            <div class="stat-card"><div class="stat-value">${stats.devicesProtected}</div><div class="stat-label">Devices Protected</div></div>
+            <div class="stat-card"><div class="stat-value">${stats.totalCoverage}</div><div class="stat-label">Total Coverage</div></div>
+            <div class="stat-card"><div class="stat-value">${stats.openClaims}</div><div class="stat-label">Open Claims</div></div>
+            <div class="stat-card"><div class="stat-value">${stats.warrantyExpiring}</div><div class="stat-label">Expiring Soon</div></div>
+          `;
+        } else if (user.typeConfig.id === 'health') {
+          statsHtml = `
+            <div class="stat-card"><div class="stat-value">${stats.familyMembers}</div><div class="stat-label">Members Covered</div></div>
+            <div class="stat-card"><div class="stat-value">${stats.totalCoverage}</div><div class="stat-label">Total Coverage</div></div>
+            <div class="stat-card"><div class="stat-value">${stats.coverageUsed}</div><div class="stat-label">Coverage Used</div></div>
+            <div class="stat-card"><div class="stat-value">${stats.pendingClaims}</div><div class="stat-label">Pending Claims</div></div>
+          `;
+        }
+
+        return `
+          <section class="priority-section" id="statsSection">
+            <div class="stats-grid">
+              ${statsHtml}
+            </div>
+          </section>
+        `;
+      }
+
+      renderPolicies(policies) {
+        const policiesHtml = policies.map(policy => {
+          const policyType = POLICY_TYPES[policy.type];
+          const statusClass = policy.status === 'expiring_soon' ? 'expiring' :
+            policy.status === 'expired' ? 'expired' : 'active';
+
+          // Get contextual nudge for this policy
+          const nudge = this.getNudgeForPolicy(policy);
+          const nudgeHtml = nudge ? `
+            <div class="policy-nudge">
+              <div class="policy-nudge-icon">${nudge.icon}</div>
+              <div class="policy-nudge-content">
+                <div class="policy-nudge-label">Recommended for you</div>
+                <div class="policy-nudge-title">${nudge.name}</div>
+                <div class="policy-nudge-benefit">${nudge.benefit}</div>
+              </div>
+              <div class="policy-nudge-action">
+                <div class="policy-nudge-price">${nudge.price}</div>
+                <button class="btn btn-sm btn-primary">Add to Policy →</button>
+              </div>
+            </div>
+          ` : '';
+
+          return `
+            <div class="card policy-card policy-card--${policy.type}">
+              <div class="policy-card-content">
+                <div class="policy-icon policy-icon--${policy.type}">
+                  ${policyType.icon}
+                </div>
+                <div class="policy-details">
+                  <div class="policy-name">${policy.name}</div>
+                  <div class="policy-meta">${policy.policyNumber}</div>
+                  ${policy.vehicle ? `<div class="policy-meta">${policy.vehicle}</div>` : ''}
+                  ${policy.members ? `<div class="policy-meta">${policy.members.join(', ')}</div>` : ''}
+                  ${policy.devices ? `<div class="policy-meta">${policy.devices.join(', ')}</div>` : ''}
+                  <div class="policy-expiry">
+                    <span class="status-dot status-dot--${statusClass}"></span>
+                    ${policy.status === 'upcoming'
+              ? `Starts soon`
+              : `${policy.daysToExpiry} days remaining`}
+                  </div>
+                </div>
+              </div>
+              <div class="policy-actions">
+                <button class="btn btn-sm btn-secondary">View Details</button>
+                ${policy.status === 'expiring_soon'
+              ? '<button class="btn btn-sm btn-primary">Renew Now</button>'
+              : '<button class="btn btn-sm btn-ghost">File Claim</button>'}
+              </div>
+              ${nudgeHtml}
+            </div>
+          `;
+        }).join('');
+
+        return `
+          <section class="priority-section" id="policiesSection">
+            <div class="section-header">
+              <h2 class="section-title">📋 Your Policies <span class="section-count">${policies.length}</span></h2>
+              <a href="#" class="section-action">View All →</a>
+            </div>
+            <div class="policies-grid">
+              ${policiesHtml}
+            </div>
+          </section>
+        `;
+      }
+
+      renderClaims(claims) {
+        const claimsHtml = claims.map(claim => {
+          const policyType = POLICY_TYPES[claim.policyType];
+          const statusClass = claim.status === 'approved' ? 'success' :
+            claim.status === 'rejected' ? 'error' : 'info';
+
+          return `
+            <div class="claim-item">
+              <div class="claim-icon policy-icon--${claim.policyType}">
+                ${policyType.icon}
+              </div>
+              <div class="claim-details">
+                <div class="claim-title">${claim.type} - ${claim.claimNumber}</div>
+                <div class="claim-meta">${claim.policyName} • ₹${claim.amount.toLocaleString()}</div>
+              </div>
+              <div class="claim-status">
+                <span class="badge badge-${statusClass}">${claim.statusText}</span>
+                <div class="claim-meta" style="margin-top: 4px;">Step ${claim.currentStep}/${claim.totalSteps}</div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        return `
+          <section class="priority-section" id="claimsSection">
+            <div class="section-header">
+              <h2 class="section-title">📊 Claims & Services</h2>
+              <a href="#" class="section-action">Track All →</a>
+            </div>
+            <div class="card">
+              <div class="claims-list">
+                ${claimsHtml}
+              </div>
+            </div>
+          </section>
+        `;
+      }
+
+      renderNewProducts(products) {
+        const productsHtml = products.map(product => `
+          <div class="card new-product-card new-product-card--${product.id}">
+            <div class="new-product-header">
+              <div class="new-product-icon">${product.icon}</div>
+              <div>
+                <div class="new-product-name">${product.name}</div>
+                <div class="new-product-tagline">${product.tagline}</div>
+              </div>
+            </div>
+            <p class="new-product-description">${product.description}</p>
+            <ul class="new-product-benefits">
+              ${product.benefits.map(b => `<li>${b}</li>`).join('')}
+            </ul>
+            <div class="new-product-footer">
+              <div class="new-product-price">
+                <span class="price-label">Starting from</span>
+                <span class="price-value">${product.startingPrice}</span>
+              </div>
+              <button class="btn btn-primary">Get Quote →</button>
+            </div>
+          </div>
+        `).join('');
+
+        return `
+          <section class="priority-section" id="newProductsSection">
+            <div class="section-header">
+              <h2 class="section-title">✨ Explore More Protection</h2>
+              <a href="#" class="section-action">View All Products →</a>
+            </div>
+            <div class="new-products-grid">
+              ${productsHtml}
+            </div>
+          </section>
+        `;
+      }
+
+      renderUpsell(upsell) {
+        return `
+          <section class="priority-section" id="upsellSection">
+            <div class="card upsell-card">
+              <div class="upsell-header">
+                <div class="upsell-icon">${upsell.icon}</div>
+                <div>
+                  <div class="upsell-label">Recommended for You</div>
+                  <div class="upsell-title">${upsell.name}</div>
+                </div>
+              </div>
+              <p class="upsell-benefit">${upsell.benefit}</p>
+              <p class="text-sm text-muted mb-4">${upsell.reason}</p>
+              <div class="flex items-center justify-between">
+                <span class="text-lg text-semibold">${upsell.price}</span>
+                <button class="btn btn-primary">Add to Policy →</button>
+              </div>
+            </div>
+          </section>
+        `;
+      }
+
+      formatStepName(step) {
+        return step.split('_').map(word =>
+          word.charAt(0).toUpperCase() + word.slice(1)
+        ).join(' ');
+      }
+
+      resumeJourney(journeyId) {
+        alert(`Resuming journey: ${journeyId}\n\nThis would navigate to the checkout/form flow.`);
+      }
+
+      restartJourney(journeyId) {
+        alert(`Restarting journey: ${journeyId}\n\nThis would clear progress and start fresh.`);
+      }
+    }
+
+    // Initialize dashboard
+    const dashboard = new DashboardEngine();
+
+    function handleUserTypeChange(userType) {
+      dashboard.setUserType(userType);
+    }
+
+    // Render on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      dashboard.render();
+    });
+  </script>
+</body>
+
+</html>
